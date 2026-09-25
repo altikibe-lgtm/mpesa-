@@ -47,6 +47,7 @@
       margin: 0;
       padding: 0;
       background-color: var(--card-bg);
+      /* Extend behind system status bar */
       padding-top: var(--safe-top);
       padding-bottom: var(--safe-bottom);
     }
@@ -97,6 +98,7 @@
       position: sticky;
       top: 0;
       z-index: 50;
+      /* Extend white background behind the status bar */
       margin-top: calc(-1 * var(--safe-top));
       padding-top: calc(16px + var(--safe-top));
     }
@@ -441,7 +443,6 @@
       display: none !important;
     }
 
-    /* Second card */
     .balance-card.secondary {
       flex: 0 0 60%;
       max-width: 260px;
@@ -449,31 +450,6 @@
 
     .balance-card.secondary .balance-label {
       color: var(--primary-green);
-    }
-
-    /* Airime hidden placeholder for the secondary card */
-    .airtime-hidden-placeholder {
-      display: none;
-      width: 100px;
-      height: 30px;
-      border-radius: 8px;
-      background: linear-gradient(90deg, var(--hidden-base) 25%, var(--hidden-shine) 50%, var(--hidden-base) 75%);
-      background-size: 200% 100%;
-      animation: shimmer-hidden 2s infinite;
-    }
-
-    .airtime-hidden-placeholder.visible {
-      display: block;
-    }
-
-    .airtime-amount {
-      font-size: 22px;
-      font-weight: 700;
-      color: var(--text-primary);
-    }
-
-    .airtime-amount.hidden {
-      display: none;
     }
 
     /* ============================================
@@ -985,13 +961,7 @@
       <div class="balance-card secondary">
         <div class="balance-label">My Balance</div>
         <div style="font-size:13px; color:var(--text-secondary); margin-bottom:4px;">Airtime</div>
-        
-        <!-- Airtime amount is hidden by default -->
-        <div class="airtime-amount hidden" id="airtimeAmount">Ksh. 0</div>
-        
-        <!-- Airtime hidden placeholder is visible by default -->
-        <div class="airtime-hidden-placeholder visible" id="airtimeHiddenPlaceholder"></div>
-        
+        <div style="font-size:22px; font-weight:700; color:var(--text-primary);">Ksh. 0</div>
         <div style="margin-top:auto; padding-top:8px;">
           <div style="width:100%; height:38px; border-radius:10px; border:1.5px solid #E0E0E0;"></div>
         </div>
@@ -1216,7 +1186,7 @@
     let balanceVisible = false;
     let isLoading = false;
 
-    // DOM References - Primary Card
+    // DOM References
     const balanceAmount = document.getElementById('balanceAmount');
     const fulizaText = document.getElementById('fulizaText');
     const hiddenBalancePlaceholder = document.getElementById('hiddenBalancePlaceholder');
@@ -1225,10 +1195,6 @@
     const skeletonFuliza = document.getElementById('skeletonFuliza');
     const eyeBtn = document.getElementById('eyeBtn');
     const eyeIcon = document.getElementById('eyeIcon');
-
-    // DOM References - Secondary Card (Airtime)
-    const airtimeAmount = document.getElementById('airtimeAmount');
-    const airtimeHiddenPlaceholder = document.getElementById('airtimeHiddenPlaceholder');
 
     // ------------------------------------------
     // 1. Balance Visibility Toggle
@@ -1239,16 +1205,12 @@
       balanceVisible = !balanceVisible;
 
       if (balanceVisible) {
-        // Show actual M-PESA balance
+        // Show actual balance
         balanceAmount.classList.remove('hidden');
         hiddenBalancePlaceholder.classList.remove('visible');
         
         fulizaText.classList.remove('hidden');
         hiddenFulizaPlaceholder.classList.remove('visible');
-        
-        // Show actual Airtime balance
-        airtimeAmount.classList.remove('hidden');
-        airtimeHiddenPlaceholder.classList.remove('visible');
         
         // Eye open icon
         eyeIcon.innerHTML = `
@@ -1257,16 +1219,12 @@
         `;
         eyeIcon.setAttribute('stroke', '#777777');
       } else {
-        // Hide M-PESA balance: show soft gray rounded placeholders
+        // Hide balance: show soft gray rounded placeholders
         balanceAmount.classList.add('hidden');
         hiddenBalancePlaceholder.classList.add('visible');
         
         fulizaText.classList.add('hidden');
         hiddenFulizaPlaceholder.classList.add('visible');
-        
-        // Hide Airtime balance: show soft gray rounded placeholder
-        airtimeAmount.classList.add('hidden');
-        airtimeHiddenPlaceholder.classList.add('visible');
         
         // Eye closed icon
         eyeIcon.innerHTML = `
@@ -1292,10 +1250,6 @@
         hiddenBalancePlaceholder.classList.remove('visible');
         hiddenFulizaPlaceholder.classList.remove('visible');
         
-        // Also hide airtime content
-        airtimeAmount.classList.add('hidden');
-        airtimeHiddenPlaceholder.classList.remove('visible');
-        
         // Show skeleton loaders
         skeletonAmount.classList.remove('skeleton-hidden');
         skeletonFuliza.classList.remove('skeleton-hidden');
@@ -1313,18 +1267,12 @@
           
           fulizaText.classList.remove('hidden');
           hiddenFulizaPlaceholder.classList.remove('visible');
-          
-          airtimeAmount.classList.remove('hidden');
-          airtimeHiddenPlaceholder.classList.remove('visible');
         } else {
           balanceAmount.classList.add('hidden');
           hiddenBalancePlaceholder.classList.add('visible');
           
           fulizaText.classList.add('hidden');
           hiddenFulizaPlaceholder.classList.add('visible');
-          
-          airtimeAmount.classList.add('hidden');
-          airtimeHiddenPlaceholder.classList.add('visible');
         }
       }
     }
