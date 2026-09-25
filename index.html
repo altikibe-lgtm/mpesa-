@@ -1,343 +1,1333 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enter M-PESA PIN</title>
-    <style>
-        :root {
-            --bg-color: #fcfbf7;
-            --text-main: #1f2421;
-            --text-muted: #5f6368;
-            --banner-bg: #e6f4ea;
-            --banner-text: #137333;
-            --banner-border: #ceead6;
-            --pin-border: #dadce0;
-            --pin-focus: #137333;
-            --keypad-active: rgba(0, 0, 0, 0.05);
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>M-PESA App Clone</title>
+  <style>
+    /* ============================================
+       CSS VARIABLES & RESET
+       ============================================ */
+    :root {
+      --primary-green: #35A853;
+      --bright-green: #00D95F;
+      --red-accent: #E31B3B;
+      --blue-accent: #18A9E5;
+      --page-bg: #F3F5F8;
+      --card-bg: #FFFFFF;
+      --text-primary: #252525;
+      --text-secondary: #777777;
+      --skeleton-base: #E8EAED;
+      --skeleton-shine: #F5F6F8;
+      --hidden-base: #E2E6EA;
+      --hidden-shine: #F0F2F5;
+      --shadow-sm: 0 1px 4px rgba(0, 0, 0, 0.04);
+      --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.08);
+      --radius-card: 24px;
+      --radius-btn: 12px;
+      --font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            overflow: hidden;
-            user-select: none;
-        }
+    html, body {
+      height: 100%;
+      overflow-x: hidden;
+      background-color: var(--page-bg);
+      font-family: var(--font-family);
+      color: var(--text-primary);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
 
-        .container {
-            width: 100%;
-            max-width: 420px;
-            height: 100vh;
-            max-height: 850px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            align-items: center;
-            padding: 32px 24px 24px 24px;
-            background-color: var(--bg-color);
-            position: relative;
-        }
+    /* ============================================
+       APP CONTAINER
+       ============================================ */
+    .app-container {
+      max-width: 100%;
+      margin: 0 auto;
+      background-color: var(--page-bg);
+      min-height: 100vh;
+      position: relative;
+      overflow-x: hidden;
+      padding-bottom: 24px;
+    }
 
-        .top-section {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-            margin-top: 12px;
-        }
+    @media (min-width: 480px) {
+      .app-container {
+        max-width: 430px;
+        box-shadow: 0 0 40px rgba(0, 0, 0, 0.06);
+      }
+    }
 
-        h1 {
-            font-size: 22px;
-            font-weight: 500;
-            color: var(--text-main);
-            margin-bottom: 24px;
-            text-align: center;
-        }
+    /* ============================================
+       A. TOP HEADER
+       ============================================ */
+    .header {
+      background: var(--card-bg);
+      padding: 16px 18px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
 
-        .avatar {
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            background-color: #f3e8f5;
-            color: #8e24aa;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: 600;
-            font-size: 18px;
-            margin-bottom: 12px;
-        }
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex: 1;
+      min-width: 0;
+    }
 
-        .username {
-            font-size: 17px;
-            font-weight: 500;
-            color: var(--text-main);
-            margin-bottom: 4px;
-        }
+    .avatar-wrapper {
+      position: relative;
+      flex-shrink: 0;
+    }
 
-        .phone {
-            font-size: 14px;
-            color: var(--text-muted);
-            margin-bottom: 20px;
-            letter-spacing: 0.5px;
-        }
+    .avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: #FFF3E0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 17px;
+      color: #E65100;
+      letter-spacing: -0.3px;
+      border: 2px solid #FFFFFF;
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.05);
+    }
 
-        .banner {
-            display: flex;
-            align-items: center;
-            background-color: var(--banner-bg);
-            border: 1px solid var(--banner-border);
-            padding: 10px 16px;
-            border-radius: 12px;
-            width: 100%;
-            max-width: 360px;
-            margin-bottom: 24px;
-        }
+    .avatar-badge {
+      position: absolute;
+      bottom: -2px;
+      right: -2px;
+      width: 18px;
+      height: 18px;
+      background: var(--primary-green);
+      border-radius: 50%;
+      border: 2px solid #FFFFFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-        .banner-icon {
-            margin-right: 12px;
-            display: flex;
-            align-items: center;
-        }
+    .avatar-badge svg {
+      width: 9px;
+      height: 9px;
+      fill: #FFFFFF;
+    }
 
-        .banner-icon img.bundle-img {
-            width: 24px;
-            height: 24px;
-            object-fit: contain;
-            display: block;
-        }
+    .greeting {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
 
-        .banner-text {
-            font-size: 13px;
-            color: var(--banner-text);
-            font-weight: 400;
-            line-height: 1.4;
-        }
+    .greeting-top {
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-weight: 400;
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
 
-        .pin-inputs {
-            display: flex;
-            gap: 14px;
-            margin-bottom: 10px;
-        }
+    .greeting-name {
+      font-size: 28px;
+      font-weight: 400;
+      color: #000000;
+      line-height: 1.3;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      letter-spacing: -0.5px;
+    }
 
-        .pin-box {
-            width: 48px;
-            height: 52px;
-            border: 1.5px solid var(--pin-border);
-            border-radius: 12px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 24px;
-            background: transparent;
-            transition: border-color 0.2s;
-        }
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
 
-        .pin-box.filled {
-            border-color: var(--text-main);
-        }
+    .icon-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--card-bg);
+      border: 1px solid rgba(0, 0, 0, 0.06);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      cursor: pointer;
+      transition: background 0.2s;
+      box-shadow: var(--shadow-sm);
+    }
 
-        .pin-dot {
-            width: 12px;
-            height: 12px;
-            background-color: var(--text-main);
-            border-radius: 50%;
-        }
+    .icon-btn:active {
+      background: #F5F6F8;
+    }
 
-        .keypad {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            width: 100%;
-            max-width: 340px;
-            gap: 8px 24px;
-            margin-bottom: 10px;
-        }
+    .icon-btn svg {
+      width: 22px;
+      height: 22px;
+    }
 
-        .key {
-            background: transparent;
-            border: none;
-            font-size: 28px;
-            font-weight: 400;
-            color: var(--text-main);
-            height: 56px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            border-radius: 50%;
-            transition: background-color 0.15s;
-        }
+    .notification-dot {
+      position: absolute;
+      top: 9px;
+      right: 9px;
+      width: 9px;
+      height: 9px;
+      background: var(--red-accent);
+      border-radius: 50%;
+      border: 1.5px solid #FFFFFF;
+    }
 
-        .key:active {
-            background-color: var(--keypad-active);
-        }
+    /* ============================================
+       B. BALANCE CARD CAROUSEL
+       ============================================ */
+    .carousel-section {
+      padding: 16px 0 0 16px;
+      overflow: hidden;
+      position: relative;
+    }
 
-        .key svg {
-            width: 26px;
-            height: 26px;
-            fill: var(--text-main);
-        }
+    .carousel-track {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      padding-right: 16px;
+      padding-bottom: 6px;
+    }
 
-        .key img.fingerprint-img {
-            width: 26px;
-            height: 26px;
-            object-fit: contain;
-            display: block;
-        }
+    .carousel-track::-webkit-scrollbar {
+      display: none;
+    }
 
-        @media (max-height: 700px) {
-            .container {
-                padding: 16px;
-            }
-            h1 {
-                margin-bottom: 16px;
-            }
-            .banner {
-                margin-bottom: 16px;
-            }
-            .key {
-                height: 48px;
-            }
-        }
-    </style>
+    .balance-card {
+      flex: 0 0 74%;
+      max-width: 350px;
+      background: var(--card-bg);
+      border-radius: var(--radius-card);
+      padding: 18px 20px 20px;
+      scroll-snap-align: start;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid rgba(0, 0, 0, 0.04);
+      min-height: 200px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .balance-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: url("data:image/svg+xml,%3Csvg width='240' height='240' viewBox='0 0 240 240' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M120 0 L180 40 L220 20 L240 80 L200 120 L240 180 L180 200 L140 240 L80 200 L40 240 L0 180 L40 120 L0 60 Z' fill='none' stroke='%23edf2f0' stroke-width='0.5'/%3E%3Cpath d='M60 0 L120 60 L80 100 L140 140 L100 180 L160 200 L120 240 L60 200 L20 240 L0 160 L40 100 Z' fill='none' stroke='%23edf2f0' stroke-width='0.5'/%3E%3Cpath d='M180 0 L220 60 L180 100 L240 140 L200 180 L240 220 L180 240 L140 200 L100 240 L60 180 Z' fill='none' stroke='%23edf2f0' stroke-width='0.5'/%3E%3C/svg%3E");
+      background-size: 200px 200px;
+      background-position: 100px 20px;
+      background-repeat: no-repeat;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.9;
+    }
+
+    .balance-card::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 4px;
+      border-radius: var(--radius-card) 0 0 var(--radius-card);
+      background: linear-gradient(180deg, var(--primary-green) 0%, var(--primary-green) 40%, var(--blue-accent) 60%, var(--blue-accent) 100%);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .balance-card > * {
+      position: relative;
+      z-index: 2;
+    }
+
+    .balance-label {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--primary-green);
+      margin-bottom: 6px;
+      letter-spacing: 0.2px;
+    }
+
+    .balance-amount-row {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      margin-bottom: 4px;
+      min-height: 34px;
+    }
+
+    .balance-amount {
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.5px;
+      line-height: 1.2;
+    }
+
+    .balance-amount.hidden {
+      display: none;
+    }
+
+    .balance-hidden-placeholder {
+      display: none;
+      width: 120px;
+      height: 34px;
+      border-radius: 8px;
+      background: linear-gradient(90deg, var(--hidden-base) 25%, var(--hidden-shine) 50%, var(--hidden-base) 75%);
+      background-size: 200% 100%;
+      animation: shimmer-hidden 2s infinite;
+    }
+
+    .balance-hidden-placeholder.visible {
+      display: block;
+    }
+
+    .fuliza-hidden-placeholder {
+      display: none;
+      width: 180px;
+      height: 18px;
+      border-radius: 6px;
+      background: linear-gradient(90deg, var(--hidden-base) 25%, var(--hidden-shine) 50%, var(--hidden-base) 75%);
+      background-size: 200% 100%;
+      animation: shimmer-hidden 2s infinite;
+      margin-bottom: 14px;
+    }
+
+    .fuliza-hidden-placeholder.visible {
+      display: block;
+    }
+
+    @keyframes shimmer-hidden {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    .eye-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: none;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--text-secondary);
+      transition: background 0.2s;
+      flex-shrink: 0;
+    }
+
+    .eye-btn:active {
+      background: rgba(0,0,0,0.05);
+    }
+
+    .eye-btn svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .fuliza-text {
+      font-size: 13px;
+      color: var(--text-secondary);
+      font-weight: 400;
+      margin-bottom: 14px;
+      min-height: 18px;
+    }
+
+    .view-statements-btn {
+      display: block;
+      width: 100%;
+      padding: 14px 0;
+      background: transparent;
+      border: 2px solid var(--primary-green);
+      border-radius: 16px;
+      color: var(--primary-green);
+      font-size: 15px;
+      font-weight: 600;
+      font-family: var(--font-family);
+      cursor: pointer;
+      transition: background 0.2s;
+      text-align: center;
+      margin-top: auto;
+    }
+
+    .view-statements-btn:active {
+      background: rgba(53, 168, 83, 0.06);
+    }
+
+    .skeleton {
+      background: linear-gradient(90deg, var(--skeleton-base) 25%, var(--skeleton-shine) 50%, var(--skeleton-base) 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s infinite;
+      border-radius: 6px;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    .skeleton-amount {
+      width: 100px;
+      height: 30px;
+      border-radius: 8px;
+    }
+
+    .skeleton-fuliza {
+      width: 160px;
+      height: 16px;
+      border-radius: 6px;
+    }
+
+    .skeleton-hidden {
+      display: none !important;
+    }
+
+    .balance-card.secondary {
+      flex: 0 0 60%;
+      max-width: 260px;
+    }
+
+    .balance-card.secondary .balance-label {
+      color: var(--primary-green);
+    }
+
+    /* ============================================
+       C. CAROUSEL INDICATORS
+       ============================================ */
+    .carousel-indicators {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+      padding: 12px 0 4px;
+    }
+
+    .indicator {
+      height: 6px;
+      border-radius: 3px;
+      background: #D1D5DB;
+      transition: all 0.3s ease;
+    }
+
+    .indicator.active {
+      width: 24px;
+      background: var(--primary-green);
+    }
+
+    .indicator.inactive {
+      width: 6px;
+      background: #D1D5DB;
+    }
+
+    /* ============================================
+       D. QUICK ACTIONS CARD
+       ============================================ */
+    .quick-actions-card {
+      margin: 14px 16px 0;
+      background: var(--card-bg);
+      border-radius: var(--radius-card);
+      padding: 18px 14px 18px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .quick-actions-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .quick-actions-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .view-all {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--primary-green);
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .view-all svg {
+      width: 16px;
+      height: 16px;
+      fill: var(--primary-green);
+    }
+
+    .quick-actions-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      row-gap: 18px;
+      column-gap: 4px;
+    }
+
+    .quick-action-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+      padding: 0;
+      font-family: var(--font-family);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .quick-action-item:active .qa-icon {
+      transform: scale(0.95);
+    }
+
+    .qa-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: #F5F6F8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.15s ease;
+      flex-shrink: 0;
+    }
+
+    .qa-icon svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .qa-label {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--text-primary);
+      text-align: center;
+      line-height: 1.3;
+      max-width: 68px;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+
+    /* ============================================
+       E. FREQUENTS CARD
+       ============================================ */
+    .frequents-card {
+      margin: 14px 16px 0;
+      background: var(--card-bg);
+      border-radius: var(--radius-card);
+      padding: 16px 18px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .frequents-card:active {
+      background: #FAFBFC;
+    }
+
+    .frequents-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .frequents-chevron {
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.3s ease;
+      color: var(--text-secondary);
+    }
+
+    .frequents-chevron.open {
+      transform: rotate(180deg);
+    }
+
+    .frequents-chevron svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .frequents-content {
+      margin: 0 16px;
+      background: var(--card-bg);
+      border-radius: 0 0 var(--radius-card) var(--radius-card);
+      padding: 0 18px;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease, padding 0.3s ease;
+      box-shadow: var(--shadow-sm);
+      margin-top: -4px;
+    }
+
+    .frequents-content.open {
+      max-height: 200px;
+      padding: 8px 18px 16px;
+    }
+
+    .frequents-content p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+
+    /* ============================================
+       F. EXPLORE & DISCOVER DEALS
+       ============================================ */
+    .explore-section {
+      margin: 20px 16px 0;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .explore-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .explore-emoji {
+      font-size: 16px;
+      line-height: 1;
+    }
+
+    /* ============================================
+       G. DEAL BANNER
+       ============================================ */
+    .banner-wrapper {
+      margin: 12px 16px 0;
+      border-radius: var(--radius-card);
+      overflow: hidden;
+      position: relative;
+      box-shadow: var(--shadow-sm);
+      background: #1A1A1A;
+      min-height: 140px;
+      aspect-ratio: 16 / 7;
+    }
+
+    .banner-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    .banner-fallback {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #0D1B2A 0%, #1B3A4B 50%, #0D1B2A 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #FFFFFF;
+      font-size: 14px;
+      font-weight: 600;
+      padding: 20px;
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* ============================================
+       H. SCAN TO PAY FLOATING BUTTON
+       ============================================ */
+    .scan-pay-btn {
+      position: absolute;
+      bottom: 18px;
+      right: 18px;
+      background: #FFFFFF;
+      border: none;
+      border-radius: 14px;
+      padding: 12px 16px 12px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+      cursor: pointer;
+      z-index: 10;
+      font-family: var(--font-family);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .scan-pay-btn:active {
+      transform: scale(0.97);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    }
+
+    .scan-pay-btn .qr-icon {
+      width: 28px;
+      height: 28px;
+      flex-shrink: 0;
+    }
+
+    .scan-pay-btn .scan-text {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+      white-space: nowrap;
+    }
+
+    /* ============================================
+       I. FLOATING ASSISTANT BUTTON
+       ============================================ */
+    .assistant-btn {
+      position: absolute;
+      bottom: 70px;
+      right: 16px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: #FFFFFF;
+      border: 2px solid #FFFFFF;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+      cursor: pointer;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      transition: transform 0.15s ease;
+    }
+
+    .assistant-btn:active {
+      transform: scale(0.95);
+    }
+
+    .assistant-btn img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+    }
+
+    .assistant-placeholder {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, #E8F0FE, #D2E3FC);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      border-radius: 50%;
+    }
+
+    /* ============================================
+       UTILITY / MISC
+       ============================================ */
+    .hidden {
+      display: none !important;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
+    }
+
+    /* Responsive tweaks */
+    @media (max-width: 360px) {
+      .quick-action-item .qa-label {
+        font-size: 9px;
+      }
+      .qa-icon {
+        width: 44px;
+        height: 44px;
+      }
+      .qa-icon svg {
+        width: 20px;
+        height: 20px;
+      }
+      .balance-card {
+        flex: 0 0 85%;
+        padding: 14px 14px 16px;
+      }
+      .balance-amount {
+        font-size: 26px;
+      }
+      .header {
+        padding: 12px 14px 14px;
+      }
+      .avatar {
+        width: 42px;
+        height: 42px;
+        font-size: 15px;
+      }
+      .greeting-name {
+        font-size: 24px;
+      }
+      .icon-btn {
+        width: 38px;
+        height: 38px;
+      }
+      .icon-btn svg {
+        width: 18px;
+        height: 18px;
+      }
+      .quick-actions-card {
+        padding: 16px 12px 18px;
+        margin: 14px 14px 0;
+      }
+      .frequents-card {
+        padding: 16px 16px;
+        margin: 14px 14px 0;
+      }
+      .explore-section {
+        margin: 20px 14px 0;
+      }
+      .banner-wrapper {
+        margin: 12px 14px 0;
+      }
+      .scan-pay-btn {
+        padding: 12px 16px 12px 12px;
+        bottom: 16px;
+        right: 16px;
+      }
+      .scan-pay-btn .scan-text {
+        font-size: 15px;
+      }
+      .scan-pay-btn .qr-icon {
+        width: 28px;
+        height: 28px;
+      }
+      .assistant-btn {
+        width: 56px;
+        height: 56px;
+        bottom: 70px;
+        right: 14px;
+      }
+    }
+  </style>
 </head>
 <body>
 
-    <div class="container">
-        <div class="top-section">
-            <h1>Enter your M-PESA PIN</h1>
-            
-            <div class="avatar">DY</div>
-            
-            <div class="username">Dickson Yegon</div>
-            <div class="phone">011****26</div>
+<div class="app-container" id="app">
 
-            <div class="banner">
-                <div class="banner-icon">
-                    <img src="bundle.png" alt="Data Bundle Icon" class="bundle-img">
-                </div>
-                <div class="banner-text">This app will not use any of your data bundles</div>
-            </div>
-
-            <div class="pin-inputs" id="pinContainer">
-                <div class="pin-box"></div>
-                <div class="pin-box"></div>
-                <div class="pin-box"></div>
-                <div class="pin-box"></div>
-            </div>
+  <!-- ============================================
+       A. TOP HEADER
+       ============================================ -->
+  <header class="header">
+    <div class="header-left">
+      <div class="avatar-wrapper">
+        <div class="avatar">DY</div>
+        <div class="avatar-badge">
+          <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
         </div>
+      </div>
+      <div class="greeting">
+        <span class="greeting-top">Good afternoon,</span>
+        <span class="greeting-name">Dickson <span style="font-size:24px;">👋</span></span>
+      </div>
+    </div>
+    <div class="header-right">
+      <button class="icon-btn" aria-label="Notifications">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#252525" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+        </svg>
+        <span class="notification-dot"></span>
+      </button>
+      <button class="icon-btn" aria-label="Search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#35A853" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+      </button>
+    </div>
+  </header>
 
-        <div class="keypad">
-            <button class="key" data-value="1">1</button>
-            <button class="key" data-value="2">2</button>
-            <button class="key" data-value="3">3</button>
-            <button class="key" data-value="4">4</button>
-            <button class="key" data-value="5">5</button>
-            <button class="key" data-value="6">6</button>
-            <button class="key" data-value="7">7</button>
-            <button class="key" data-value="8">8</button>
-            <button class="key" data-value="9">9</button>
-            <button class="key" id="biometricBtn" title="Biometric Login">
-                <img src="finger.png" alt="Fingerprint" class="fingerprint-img">
-            </button>
-            <button class="key" data-value="0">0</button>
-            <button class="key" id="deleteBtn" title="Delete">
-                <svg viewBox="0 0 24 24">
-                    <path d="M22 3H7c-.69 0-1.23.35-1.59.88L0 12l5.41 8.11c.36.53.9 .89 1.59.89h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H7.07L2.4 12l4.67-7H22v14zm-11.59-9.41L13 11.59l2.59-2.6c.39-.39 1.02-.39 1.41 0 .39.39.39 1.02 0 1.41L14.41 13l2.6 2.59c.39.39.39 1.02 0 1.41-.39.39-1.02.39-1.41 0L13 14.41l-2.59 2.6c-.39.39-1.02.39-1.41 0-.39-.39-.39-1.02 0-1.41L11.59 13 9 10.41c-.39-.39-.39-1.02 0-1.41.39-.39 1.02-.39 1.41 0z"></path>
-                </svg>
-            </button>
+  <!-- ============================================
+       B. BALANCE CARD CAROUSEL
+       ============================================ -->
+  <section class="carousel-section">
+    <div class="carousel-track" id="carouselTrack">
+
+      <!-- First Balance Card -->
+      <div class="balance-card" id="balanceCard">
+        <div class="balance-label">M-PESA Balance</div>
+        <div class="balance-amount-row">
+          <!-- Balance is hidden by default via class "hidden" -->
+          <div class="balance-amount hidden" id="balanceAmount">Ksh 11.62</div>
+          
+          <!-- Hidden balance placeholder is visible by default -->
+          <div class="balance-hidden-placeholder visible" id="hiddenBalancePlaceholder"></div>
+          
+          <!-- Loading skeleton (hidden by default) -->
+          <div class="skeleton skeleton-amount skeleton-hidden" id="skeletonAmount"></div>
+          
+          <button class="eye-btn" id="eyeBtn" aria-label="Toggle balance visibility">
+            <svg id="eyeIcon" viewBox="0 0 24 24" fill="none" stroke="#777777" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+              <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+              <path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/>
+              <line x1="1" y1="1" x2="23" y2="23"/>
+            </svg>
+          </button>
         </div>
+        
+        <!-- Fuliza text is hidden by default via class "hidden" -->
+        <div class="fuliza-text hidden" id="fulizaText">Available Fuliza: Ksh 200.00</div>
+        
+        <!-- Hidden fuliza placeholder is visible by default -->
+        <div class="fuliza-hidden-placeholder visible" id="hiddenFulizaPlaceholder"></div>
+        
+        <!-- Loading skeleton (hidden by default) -->
+        <div class="skeleton skeleton-fuliza skeleton-hidden" id="skeletonFuliza"></div>
+        
+        <button class="view-statements-btn">View Statements</button>
+      </div>
+
+      <!-- Second Balance Card (partially visible) -->
+      <div class="balance-card secondary">
+        <div class="balance-label">My Balance</div>
+        <div style="font-size:13px; color:var(--text-secondary); margin-bottom:4px;">Airtime</div>
+        <div style="font-size:22px; font-weight:700; color:var(--text-primary);">Ksh. 0</div>
+        <div style="margin-top:auto; padding-top:8px;">
+          <div style="width:100%; height:38px; border-radius:10px; border:1.5px solid #E0E0E0;"></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============================================
+       C. CAROUSEL INDICATORS
+       ============================================ -->
+  <div class="carousel-indicators">
+    <span class="indicator active"></span>
+    <span class="indicator inactive"></span>
+  </div>
+
+  <!-- ============================================
+       D. QUICK ACTIONS CARD
+       ============================================ -->
+  <div class="quick-actions-card">
+    <div class="quick-actions-header">
+      <span class="quick-actions-title">Quick Actions</span>
+      <a class="view-all" href="#" onclick="return false;">
+        View all
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"/>
+        </svg>
+      </a>
     </div>
 
-    <script>
-        let pin = [];
-        const maxPinLength = 4;
-        const pinBoxes = document.querySelectorAll('.pin-box');
-        const keys = document.querySelectorAll('.key[data-value]');
-        const deleteBtn = document.getElementById('deleteBtn');
-        const biometricBtn = document.getElementById('biometricBtn');
+    <div class="quick-actions-grid">
+      <!-- Send Money -->
+      <button class="quick-action-item" onclick="handleQuickAction('Send Money')">
+        <div class="qa-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#35A853" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 2L11 13"/>
+            <path d="M22 2l-7 20-4-9-9-4 20-7z"/>
+            <path d="M11 13l3-3" stroke="#E31B3B" stroke-width="1.5"/>
+          </svg>
+        </div>
+        <span class="qa-label">Send<br>Money</span>
+      </button>
 
-        // Redirect helper – only when the correct PIN is entered (2580)
-        function redirectToLogin() {
-            // Preserve all original UI & logic, but navigate to login.html
-            window.location.href = 'login.html';
+      <!-- Lipa na M-PESA -->
+      <button class="quick-action-item" onclick="handleQuickAction('Lipa na M-PESA')">
+        <div class="qa-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#35A853" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 6h15l1.5 12.5a2 2 0 0 1-2 2H5.5a2 2 0 0 1-2-2L5 6z"/>
+            <path d="M6 6L5 2H2" stroke="#E31B3B" stroke-width="1.8"/>
+            <path d="M9 10v6" stroke="#35A853" stroke-width="1.5"/>
+            <path d="M15 10v6" stroke="#35A853" stroke-width="1.5"/>
+            <circle cx="9" cy="19" r="1" fill="#E31B3B" stroke="none"/>
+            <circle cx="15" cy="19" r="1" fill="#E31B3B" stroke="none"/>
+          </svg>
+        </div>
+        <span class="qa-label">Lipa na<br>M-PESA</span>
+      </button>
+
+      <!-- Withdraw Money -->
+      <button class="quick-action-item" onclick="handleQuickAction('Withdraw Money')">
+        <div class="qa-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#35A853" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="6" width="20" height="14" rx="2"/>
+            <path d="M6 10h4" stroke="#35A853" stroke-width="1.5"/>
+            <path d="M6 14h2" stroke="#35A853" stroke-width="1.5"/>
+            <path d="M18 8v8" stroke="#E31B3B" stroke-width="2.2"/>
+            <path d="M15 13l3 3 3-3" stroke="#E31B3B" stroke-width="2.2"/>
+          </svg>
+        </div>
+        <span class="qa-label">Withdraw<br>Money</span>
+      </button>
+
+      <!-- Pochi Wallet -->
+      <button class="quick-action-item" onclick="handleQuickAction('Pochi Wallet')">
+        <div class="qa-icon" style="background:#E8F5E9;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#35A853" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10" fill="#35A853" stroke="none"/>
+            <path d="M7 9c1.5-1.5 4-2 6-1" stroke="#FFFFFF" stroke-width="2" fill="none"/>
+            <path d="M17 15c-1.5 1.5-4 2-6 1" stroke="#E31B3B" stroke-width="2" fill="none"/>
+            <circle cx="12" cy="12" r="2" fill="#FFFFFF" stroke="none"/>
+          </svg>
+        </div>
+        <span class="qa-label">Pochi<br>Wallet</span>
+      </button>
+
+      <!-- Buy Bundles -->
+      <button class="quick-action-item" onclick="handleQuickAction('Buy Bundles')">
+        <div class="qa-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#35A853" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2v20"/>
+            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+            <path d="M8 8l-4 4 4 4" stroke="#E31B3B" stroke-width="2" fill="none"/>
+            <path d="M16 8l4 4-4 4" stroke="#E31B3B" stroke-width="2" fill="none"/>
+          </svg>
+        </div>
+        <span class="qa-label">Buy<br>Bundles</span>
+      </button>
+
+      <!-- Airtime Top Up -->
+      <button class="quick-action-item" onclick="handleQuickAction('Airtime Top Up')">
+        <div class="qa-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#35A853" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+            <path d="M16 2l-4 6 3 1-4 6" stroke="#E31B3B" stroke-width="2" fill="none"/>
+          </svg>
+        </div>
+        <span class="qa-label">Airtime<br>Top Up</span>
+      </button>
+
+      <!-- Tunukiwa Bundles -->
+      <button class="quick-action-item" onclick="handleQuickAction('Tunukiwa Bundles')">
+        <div class="qa-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#35A853" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 12 20 22 4 22 4 12"/>
+            <rect x="2" y="7" width="20" height="5" rx="1"/>
+            <line x1="12" y1="22" x2="12" y2="7"/>
+            <path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/>
+            <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/>
+            <path d="M7 12h10" stroke="#E31B3B" stroke-width="1.5"/>
+            <circle cx="12" cy="15" r="1" fill="#E31B3B" stroke="none"/>
+          </svg>
+        </div>
+        <span class="qa-label">Tunukiwa<br>Bundles</span>
+      </button>
+
+      <!-- Home Internet -->
+      <button class="quick-action-item" onclick="handleQuickAction('Home Internet')">
+        <div class="qa-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#35A853" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+            <path d="M9.5 14.5a3.5 3.5 0 0 1 5 0" stroke="#35A853" stroke-width="1.5"/>
+            <path d="M7.5 12.5a6 6 0 0 1 9 0" stroke="#35A853" stroke-width="1.5"/>
+            <circle cx="12" cy="17" r="1" fill="#E31B3B" stroke="none"/>
+          </svg>
+        </div>
+        <span class="qa-label">Home<br>Internet</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ============================================
+       E. FREQUENTS CARD
+       ============================================ -->
+  <div class="frequents-card" id="frequentsToggle">
+    <span class="frequents-title">Frequents</span>
+    <div class="frequents-chevron" id="frequentsChevron">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#777777" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="6 9 12 15 18 9"/>
+      </svg>
+    </div>
+  </div>
+  <div class="frequents-content" id="frequentsContent">
+    <p>Your frequent transactions will appear here. Send money to your regular contacts quickly.</p>
+  </div>
+
+  <!-- ============================================
+       F. EXPLORE & DISCOVER DEALS
+       ============================================ -->
+  <div class="explore-section">
+    <span class="explore-title">Explore &amp; Discover Deals</span>
+    <span class="explore-emoji">🔥</span>
+  </div>
+
+  <!-- ============================================
+       G. DEAL BANNER
+       ============================================ -->
+  <div class="banner-wrapper" id="bannerWrapper">
+    <!-- Fallback if image not available -->
+    <div class="banner-fallback" id="bannerFallback">
+      <span>PATA MORE NA MY ONEAPP</span>
+    </div>
+    <img src="assets/deal-banner.jpg" alt="Deal Banner" class="banner-image" id="bannerImage"
+         onerror="this.style.display='none'; document.getElementById('bannerFallback').style.display='flex';"
+         onload="document.getElementById('bannerFallback').style.display='none';">
+  </div>
+
+  <!-- ============================================
+       H. SCAN TO PAY FLOATING BUTTON
+       ============================================ -->
+  <button class="scan-pay-btn" id="scanPayBtn" onclick="handleScanPay()">
+    <svg class="qr-icon" viewBox="0 0 28 28" fill="none">
+      <!-- QR Code icon with green/red -->
+      <rect x="2" y="2" width="8" height="8" rx="1.5" stroke="#35A853" stroke-width="1.8" fill="none"/>
+      <rect x="4" y="4" width="4" height="4" rx="0.5" fill="#35A853"/>
+      <rect x="18" y="2" width="8" height="8" rx="1.5" stroke="#E31B3B" stroke-width="1.8" fill="none"/>
+      <rect x="20" y="4" width="4" height="4" rx="0.5" fill="#E31B3B"/>
+      <rect x="2" y="18" width="8" height="8" rx="1.5" stroke="#E31B3B" stroke-width="1.8" fill="none"/>
+      <rect x="4" y="20" width="4" height="4" rx="0.5" fill="#E31B3B"/>
+      <rect x="18" y="18" width="8" height="8" rx="1.5" stroke="#35A853" stroke-width="1.8" fill="none"/>
+      <rect x="20" y="20" width="4" height="4" rx="0.5" fill="#35A853"/>
+      <rect x="12" y="2" width="4" height="4" rx="1" fill="#35A853"/>
+      <rect x="12" y="12" width="4" height="4" rx="1" fill="#E31B3B"/>
+      <rect x="12" y="22" width="4" height="4" rx="1" fill="#35A853"/>
+      <rect x="2" y="12" width="4" height="4" rx="1" fill="#E31B3B"/>
+      <rect x="22" y="12" width="4" height="4" rx="1" fill="#35A853"/>
+    </svg>
+    <span class="scan-text">Scan to pay</span>
+  </button>
+
+  <!-- ============================================
+       I. FLOATING ASSISTANT BUTTON
+       ============================================ -->
+  <button class="assistant-btn" id="assistantBtn" onclick="handleAssistant()">
+    <img src="assets/assistant.png" alt="Assistant"
+         onerror="this.style.display='none'; this.parentElement.querySelector('.assistant-placeholder').style.display='flex';">
+    <div class="assistant-placeholder" style="display:none;">👩🏾‍💼</div>
+  </button>
+
+</div>
+
+<!-- ============================================
+     JAVASCRIPT
+     ============================================ -->
+<script>
+  (function() {
+    'use strict';
+
+    // ------------------------------------------
+    // State
+    // ------------------------------------------
+    // Balance is hidden by default
+    let balanceVisible = false;
+    let isLoading = false;
+
+    // DOM References
+    const balanceAmount = document.getElementById('balanceAmount');
+    const fulizaText = document.getElementById('fulizaText');
+    const hiddenBalancePlaceholder = document.getElementById('hiddenBalancePlaceholder');
+    const hiddenFulizaPlaceholder = document.getElementById('hiddenFulizaPlaceholder');
+    const skeletonAmount = document.getElementById('skeletonAmount');
+    const skeletonFuliza = document.getElementById('skeletonFuliza');
+    const eyeBtn = document.getElementById('eyeBtn');
+    const eyeIcon = document.getElementById('eyeIcon');
+
+    // ------------------------------------------
+    // 1. Balance Visibility Toggle
+    // ------------------------------------------
+    function toggleBalanceVisibility() {
+      if (isLoading) return; // Don't toggle while loading
+
+      balanceVisible = !balanceVisible;
+
+      if (balanceVisible) {
+        // Show actual balance
+        balanceAmount.classList.remove('hidden');
+        hiddenBalancePlaceholder.classList.remove('visible');
+        
+        fulizaText.classList.remove('hidden');
+        hiddenFulizaPlaceholder.classList.remove('visible');
+        
+        // Eye open icon
+        eyeIcon.innerHTML = `
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+          <circle cx="12" cy="12" r="3"/>
+        `;
+        eyeIcon.setAttribute('stroke', '#777777');
+      } else {
+        // Hide balance: show soft gray rounded placeholders
+        balanceAmount.classList.add('hidden');
+        hiddenBalancePlaceholder.classList.add('visible');
+        
+        fulizaText.classList.add('hidden');
+        hiddenFulizaPlaceholder.classList.add('visible');
+        
+        // Eye closed icon
+        eyeIcon.innerHTML = `
+          <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
+          <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+          <path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/>
+          <line x1="1" y1="1" x2="23" y2="23"/>
+        `;
+        eyeIcon.setAttribute('stroke', '#777777');
+      }
+    }
+
+    // ------------------------------------------
+    // 2. Loading State Toggle
+    // ------------------------------------------
+    function setLoadingState(loading) {
+      isLoading = loading;
+
+      if (loading) {
+        // Hide all real and hidden content
+        balanceAmount.classList.add('hidden');
+        fulizaText.classList.add('hidden');
+        hiddenBalancePlaceholder.classList.remove('visible');
+        hiddenFulizaPlaceholder.classList.remove('visible');
+        
+        // Show skeleton loaders
+        skeletonAmount.classList.remove('skeleton-hidden');
+        skeletonFuliza.classList.remove('skeleton-hidden');
+        
+        // Keep eye visible (per screenshot)
+      } else {
+        // Hide skeleton loaders
+        skeletonAmount.classList.add('skeleton-hidden');
+        skeletonFuliza.classList.add('skeleton-hidden');
+        
+        // Restore correct state based on balanceVisible
+        if (balanceVisible) {
+          balanceAmount.classList.remove('hidden');
+          hiddenBalancePlaceholder.classList.remove('visible');
+          
+          fulizaText.classList.remove('hidden');
+          hiddenFulizaPlaceholder.classList.remove('visible');
+        } else {
+          balanceAmount.classList.add('hidden');
+          hiddenBalancePlaceholder.classList.add('visible');
+          
+          fulizaText.classList.add('hidden');
+          hiddenFulizaPlaceholder.classList.add('visible');
         }
+      }
+    }
 
-        function updatePinDisplay() {
-            pinBoxes.forEach((box, index) => {
-                box.innerHTML = '';
-                if (index < pin.length) {
-                    const dot = document.createElement('div');
-                    dot.className = 'pin-dot';
-                    box.appendChild(dot);
-                    box.classList.add('filled');
-                } else {
-                    box.classList.remove('filled');
-                }
-            });
+    // Expose to window for manual testing
+    window.setLoadingState = setLoadingState;
+    window.toggleBalanceVisibility = toggleBalanceVisibility;
 
-            // Check if the entered PIN matches "2580"
-            if (pin.length === maxPinLength) {
-                const enteredPin = pin.join(''); // e.g., "2580"
-                if (enteredPin === '2580') {
-                    // Immediately redirect to login.html (no alert, no reset)
-                    redirectToLogin();
-                } else {
-                    // Incorrect PIN: show alert and reset (original behavior)
-                    setTimeout(() => {
-                        alert('PIN entered successfully! Processing transaction...');
-                        pin = [];
-                        updatePinDisplay();
-                    }, 200);
-                }
-            }
+    // ------------------------------------------
+    // 3. Balance Carousel
+    // ------------------------------------------
+    const track = document.getElementById('carouselTrack');
+    track.addEventListener('scroll', function() {
+      const indicators = document.querySelectorAll('.indicator');
+      const cardWidth = track.querySelector('.balance-card').offsetWidth + 12; // gap
+      const index = Math.round(track.scrollLeft / cardWidth);
+      indicators.forEach((ind, i) => {
+        if (i === index) {
+          ind.classList.add('active');
+          ind.classList.remove('inactive');
+        } else {
+          ind.classList.remove('active');
+          ind.classList.add('inactive');
         }
+      });
+    }, { passive: true });
 
-        keys.forEach(key => {
-            key.addEventListener('click', () => {
-                if (pin.length < maxPinLength) {
-                    pin.push(key.getAttribute('data-value'));
-                    updatePinDisplay();
-                }
-            });
-        });
+    // ------------------------------------------
+    // 4. Quick Action Buttons
+    // ------------------------------------------
+    window.handleQuickAction = function(actionName) {
+      console.log('Quick Action:', actionName);
+    };
 
-        deleteBtn.addEventListener('click', () => {
-            if (pin.length > 0) {
-                pin.pop();
-                updatePinDisplay();
-            }
-        });
+    // ------------------------------------------
+    // 5. Frequents Expand/Collapse
+    // ------------------------------------------
+    const frequentsToggle = document.getElementById('frequentsToggle');
+    const frequentsContent = document.getElementById('frequentsContent');
+    const frequentsChevron = document.getElementById('frequentsChevron');
 
-        biometricBtn.addEventListener('click', () => {
-            alert('Biometric authentication triggered.');
-        });
+    frequentsToggle.addEventListener('click', function() {
+      const isOpen = frequentsContent.classList.contains('open');
+      if (isOpen) {
+        frequentsContent.classList.remove('open');
+        frequentsChevron.classList.remove('open');
+      } else {
+        frequentsContent.classList.add('open');
+        frequentsChevron.classList.add('open');
+      }
+    });
 
-        window.addEventListener('keydown', (e) => {
-            if (e.key >= '0' && e.key <= '9') {
-                if (pin.length < maxPinLength) {
-                    pin.push(e.key);
-                    updatePinDisplay();
-                }
-            } else if (e.key === 'Backspace') {
-                if (pin.length > 0) {
-                    pin.pop();
-                    updatePinDisplay();
-                }
-            }
-        });
-    </script>
+    // ------------------------------------------
+    // 6. Scan to Pay
+    // ------------------------------------------
+    window.handleScanPay = function() {
+      console.log('Scan to pay clicked');
+    };
+
+    // ------------------------------------------
+    // 7. Assistant Button
+    // ------------------------------------------
+    window.handleAssistant = function() {
+      console.log('Assistant clicked');
+    };
+
+    // ------------------------------------------
+    // 8. Eye button event
+    // ------------------------------------------
+    eyeBtn.addEventListener('click', toggleBalanceVisibility);
+
+    // ------------------------------------------
+    // 9. Initial state
+    // ------------------------------------------
+    // Set loading to false (which respects the initial balanceVisible = false)
+    setLoadingState(false);
+
+  })();
+</script>
+
 </body>
 </html>
